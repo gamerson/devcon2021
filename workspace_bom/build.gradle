@@ -1,0 +1,30 @@
+dependencies {
+	targetPlatformBoms group: "com.liferay", name: "workspace-bom", version: "1.0.0"
+    providedModules group: 'com.google.guava', name: 'guava'
+}
+
+allprojects {
+	apply plugin: "java"
+	apply plugin: "maven-publish"
+
+	repositories {
+		maven {
+			url rootProject.file("repo").toURI()
+		}
+	}
+
+	publishing {
+		publications {
+			mavenJava(MavenPublication) {
+				from components.java
+				groupId = "com.liferay"
+			}
+		}
+	}
+
+	afterEvaluate { project ->
+		publishing.publications.mavenJava.pom.description = project.description
+	}
+
+	jar.finalizedBy("publishToMavenLocal")
+}

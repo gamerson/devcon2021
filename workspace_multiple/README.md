@@ -1,0 +1,4 @@
+- all modules that will be published to the repo must have the following
+-- a version set in gradle
+-- a group property set
+-- you need to delete any Bundle-SymbolicName or Bundle-Version from bnd.bnd, let the gradle plugin drive those defaults.

@@ -1,0 +1,4 @@
+Bundle-Name: hello-portlet
+Bundle-SymbolicName: hello.portlet
+Bundle-Version: 1.0.0
+Export-Package: hello.portlet.constants

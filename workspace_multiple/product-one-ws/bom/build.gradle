@@ -1,0 +1,38 @@
+apply plugin: "java-platform"
+apply plugin: "maven-publish"
+
+gradle.projectsEvaluated {
+	Set<Project> publishedModules = rootProject.allprojects.findAll { p ->
+		(p.pluginManager.hasPlugin("maven-publish") || p.pluginManager.hasPlugin("war")) && !p.equals(project(":bom"))
+	}
+
+	dependencies {
+		constraints {
+			publishedModules.each { module ->
+				api module
+			}
+		}
+	}
+}
+
+publishing {
+	repositories {
+		maven {
+			credentials {
+				username = "admin"
+				password = "admin123"
+			}
+
+			url "http://localhost:8081/nexus/content/repositories/snapshots"
+		}
+	}
+
+	publications {
+		bom(MavenPublication) {
+			from components.javaPlatform
+			artifactId = "product.one"
+		}
+	}
+}
+
+version = "1.0.0-SNAPSHOT"

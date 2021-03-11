@@ -1,0 +1,1 @@
+- need to support publishing WAR modules to BOM and Nexus
