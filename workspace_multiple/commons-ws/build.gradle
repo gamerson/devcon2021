@@ -1,0 +1,54 @@
+allprojects {
+	group = 'com.test'
+}
+
+subprojects {
+	def action = { plugin ->
+		apply plugin: "maven-publish"
+
+		publishing {
+			repositories {
+				maven {
+					credentials {
+						username = "admin"
+						password = "admin123"
+					}
+
+					url "http://localhost:8081/nexus/content/repositories/snapshots"
+				}
+			}
+
+			publications {
+				if (plugin.id == "war") {
+					mavenJava(MavenPublication) {
+							from components.web
+					}
+				}
+				else {
+					mavenJava(MavenPublication) {
+							from components.java
+					}
+				}
+			}
+		}
+
+		afterEvaluate { project ->
+			if (deploy.enabled) {
+				deploy.doLast {
+					configurations.default.resolvedConfiguration.resolvedArtifacts.each { artifact ->
+						if (artifact.extension == 'jar') {
+							logger.lifecycle "Deploying required dependency file {}", artifact
+							project.copy {
+								from artifact.file
+								into project.deploy.destinationDir
+								rename { "${artifact.name}.${artifact.extension}" }
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+	pluginManager.withPlugin("com.liferay.osgi.plugin", action)
+	pluginManager.withPlugin("war", action)
+}

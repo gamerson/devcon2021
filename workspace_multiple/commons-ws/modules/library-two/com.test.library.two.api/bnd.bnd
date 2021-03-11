@@ -1,0 +1,3 @@
+Export-Package:\
+	com.test.library.two.api
+-check: EXPORTS

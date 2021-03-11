@@ -1,0 +1,5 @@
+Bundle-Name: sbtest-service
+Bundle-SymbolicName: com.test.service
+Bundle-Version: 1.0.0
+Liferay-Require-SchemaVersion: 1.0.0
+Liferay-Service: true

@@ -1,0 +1,4 @@
+Bundle-Name: my-api
+Bundle-SymbolicName: com.foo
+Bundle-Version: 1.0.0
+Export-Package: com.foo.api

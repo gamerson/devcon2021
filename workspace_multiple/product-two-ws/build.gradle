@@ -1,0 +1,129 @@
+import groovy.util.slurpersupport.GPathResult;
+
+allprojects {
+	repositories {
+		maven {
+			url "http://localhost:8081/nexus/content/groups/public/"
+		}
+	}
+
+	group = "com.test"
+}
+
+configurations {
+	providedBoms
+	providedArtifacts
+}
+
+dependencies {
+	providedBoms group: "com.test", name: "commons", version: "1.0.0-SNAPSHOT", ext: "pom"
+	targetPlatformBoms group: "com.test", name: "commons", version: "1.0.0-SNAPSHOT"
+}
+
+tasks.named("initBundle") { task ->
+	doLast {
+		Set<File> bomFiles  = configurations.providedBoms.resolve()
+
+		bomFiles.each {
+			XmlSlurper xmlSlurper = new XmlSlurper();
+
+			GPathResult gPathResult = xmlSlurper.parse(it);
+
+			gPathResult = (GPathResult)gPathResult.getProperty(
+				"dependencyManagement");
+
+			gPathResult = (GPathResult)gPathResult.getProperty(
+				"dependencies");
+
+			gPathResult = (GPathResult)gPathResult.getProperty(
+				"dependency");
+
+			Iterator<?> iterator = gPathResult.iterator();
+
+			while (iterator.hasNext()) {
+				gPathResult = (GPathResult)iterator.next();
+
+				StringBuilder sb = new StringBuilder();
+
+				sb.append(gPathResult.getProperty("groupId"));
+				sb.append(':');
+				sb.append(gPathResult.getProperty("artifactId"));
+				sb.append(':');
+				sb.append(gPathResult.getProperty("version"));
+
+				dependencies {
+					providedArtifacts sb.toString()
+				}
+			}
+		}
+
+		def resolvedArtifacts = configurations.providedArtifacts.resolvedConfiguration.resolvedArtifacts
+
+		resolvedArtifacts.findAll { it.file.name.endsWith(".jar") }.each { artifact ->
+			project.copy {
+				from artifact.file
+				into new File(task.destinationDir, "/osgi/modules")
+				rename { "${artifact.name}.${artifact.extension}" }
+			}
+		}
+
+		resolvedArtifacts.findAll { it.file.name.endsWith(".war") }.each { artifact ->
+			project.copy {
+				from artifact.file
+				into new File(task.destinationDir, "/osgi/war")
+				rename { "${artifact.name}.${artifact.extension}" }
+			}
+		}
+	}
+}
+
+subprojects {
+	def action = { plugin ->
+		apply plugin: "maven-publish"
+
+		publishing {
+			repositories {
+				maven {
+					credentials {
+						username = "admin"
+						password = "admin123"
+					}
+
+					url "http://localhost:8081/nexus/content/repositories/snapshots"
+				}
+			}
+
+			publications {
+				if (plugin.id.equals("war")) {
+					mavenWeb(MavenPublication) {
+							from components.web
+					}
+				}
+				else {
+					mavenJava(MavenPublication) {
+							from components.java
+					}
+				}
+			}
+		}
+
+		afterEvaluate { project ->
+			if (deploy.enabled) {
+				deploy.doLast {
+					configurations.default.resolvedConfiguration.resolvedArtifacts.each { artifact ->
+						if (artifact.extension == 'jar') {
+							logger.lifecycle "Deploying required dependency file {}", artifact
+							project.copy {
+								from artifact.file
+								into project.deploy.destinationDir
+								rename { "${artifact.name}.${artifact.extension}" }
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+	pluginManager.withPlugin("com.liferay.osgi.plugin", action)
+	pluginManager.withPlugin("war", action)
+}

@@ -1,0 +1,17 @@
+{
+  "name": "react-provider",
+  "version": "1.0.0",
+  "description": "react-provider",
+  "devDependencies": {
+    "liferay-npm-bundler": "^2.18.2",
+    "liferay-npm-build-support": "^2.18.2"
+  },
+  "dependencies": {
+    "react": "16.8.6",
+		"react-dom": "16.8.6"
+  },
+  "scripts": {
+    "build": "npm run copy-assets && liferay-npm-bundler",
+    "copy-assets": "lnbs-copy-assets"
+  }
+}
