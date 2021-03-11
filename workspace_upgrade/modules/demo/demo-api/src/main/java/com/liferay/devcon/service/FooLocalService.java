@@ -60,11 +60,15 @@ public interface FooLocalService
 	/*
 	 * NOTE FOR DEVELOPERS:
 	 *
-	 * Never modify or reference this interface directly. Always use {@link FooLocalServiceUtil} to access the foo local service. Add custom service methods to <code>com.liferay.devcon.service.impl.FooLocalServiceImpl</code> and rerun ServiceBuilder to automatically copy the method declarations to this interface.
+	 * Never modify this interface directly. Add custom service methods to <code>com.liferay.devcon.service.impl.FooLocalServiceImpl</code> and rerun ServiceBuilder to automatically copy the method declarations to this interface. Consume the foo local service via injection or a <code>org.osgi.util.tracker.ServiceTracker</code>. Use {@link FooLocalServiceUtil} if injection and service tracking are not available.
 	 */
 
 	/**
 	 * Adds the foo to the database. Also notifies the appropriate model listeners.
+	 *
+	 * <p>
+	 * <strong>Important:</strong> Inspect FooLocalServiceImpl for overloaded versions of the method. If provided, use these entry points to the API, as the implementation logic may require the additional parameters defined there.
+	 * </p>
 	 *
 	 * @param foo the foo
 	 * @return the foo that was added
@@ -82,7 +86,17 @@ public interface FooLocalService
 	public Foo createFoo(long fooId);
 
 	/**
+	 * @throws PortalException
+	 */
+	public PersistedModel createPersistedModel(Serializable primaryKeyObj)
+		throws PortalException;
+
+	/**
 	 * Deletes the foo from the database. Also notifies the appropriate model listeners.
+	 *
+	 * <p>
+	 * <strong>Important:</strong> Inspect FooLocalServiceImpl for overloaded versions of the method. If provided, use these entry points to the API, as the implementation logic may require the additional parameters defined there.
+	 * </p>
 	 *
 	 * @param foo the foo
 	 * @return the foo that was removed
@@ -92,6 +106,10 @@ public interface FooLocalService
 
 	/**
 	 * Deletes the foo with the primary key from the database. Also notifies the appropriate model listeners.
+	 *
+	 * <p>
+	 * <strong>Important:</strong> Inspect FooLocalServiceImpl for overloaded versions of the method. If provided, use these entry points to the API, as the implementation logic may require the additional parameters defined there.
+	 * </p>
 	 *
 	 * @param fooId the primary key of the foo
 	 * @return the foo that was removed
@@ -282,6 +300,10 @@ public interface FooLocalService
 
 	/**
 	 * Updates the foo in the database or adds it if it does not yet exist. Also notifies the appropriate model listeners.
+	 *
+	 * <p>
+	 * <strong>Important:</strong> Inspect FooLocalServiceImpl for overloaded versions of the method. If provided, use these entry points to the API, as the implementation logic may require the additional parameters defined there.
+	 * </p>
 	 *
 	 * @param foo the foo
 	 * @return the foo that was updated
