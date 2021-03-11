@@ -14,7 +14,9 @@
 		"babel-preset-react": "6.24.1",
 		"babel-loader": "7.1.5"
 	},
-	"dependencies": {},
+	"dependencies": {
+		"demo-1-widget": "1.0.0"
+	},
 	"scripts": {
 		"build": "babel --source-maps -d build src && npm run copy-assets && liferay-npm-bundler",
 		"copy-assets": "lnbs-copy-assets",
