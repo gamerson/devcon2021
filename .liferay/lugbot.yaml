@@ -1,4 +1,5 @@
 tasks:
+  mode: verify
   upgrade:
     current: 7.3
     version: 7.3
