@@ -1,8 +1,8 @@
 tasks:
   mode: verify
   upgrade:
-    current: 7.3
+    current: 7.1
     version: 7.3
     upgrades:
-      - name: workspace
-    workspacePath: workspace_upgrade/
+      - name: api 
+    workspacePath: workspace_api_changes//
