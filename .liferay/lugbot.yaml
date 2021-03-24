@@ -1,6 +1,7 @@
 tasks:
+  mode: pr
   upgrade:
-    current: 7.3
+    current: 7.1
     version: 7.3
     upgrades:
       - name: workspace
