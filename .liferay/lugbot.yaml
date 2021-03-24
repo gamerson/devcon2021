@@ -1,0 +1,7 @@
+tasks:
+  upgrade:
+    current: 7.3
+    version: 7.3
+    upgrades:
+      - name: workspace
+    workspacePath: workspace_upgrade/
